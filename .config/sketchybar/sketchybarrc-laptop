@@ -1,0 +1,90 @@
+#!/bin/bash
+
+source "$CONFIG_DIR/colors.sh" # Loads all defined colors
+source "$CONFIG_DIR/icons.sh" # Load custom icons
+
+# This is a demo config to show some of the most important commands more easily.
+# This is meant to be changed and configured, as it is intentionally kept sparse.
+# For a more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+ITEM_DIR="$CONFIG_DIR/items"
+
+PADDINGS=3 # All paddings use this value (icon, label, background)
+
+# Unload the macOS on screen indicator overlay for volume change
+launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist > /dev/null 2>&1 &
+
+##### Bar Appearance #####
+# Configuring the general appearance of the bar, these are only some of the
+# options available. For all options see:
+# https://felixkratz.github.io/SketchyBar/config/bar
+# If you are looking for other colors, see the color picker:
+# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+
+sketchybar --bar height=39         \
+                 blur_radius=20    \
+                 position=top      \
+                 sticky=on         \
+                 padding_left=10   \
+                 padding_right=10  \
+                 color=$BAR_COLOR  \
+                 shadow=on         \
+                 corner_radius=9   \
+                 y_offset=10       \
+                 margin=10         \
+                 notch_width=0
+
+##### Changing Defaults #####
+# We now change some default values that are applied to all further items
+# For a full list of all available item properties see:
+# https://felixkratz.github.io/SketchyBar/config/items
+
+sketchybar --default updates=when_shown \
+                     icon.font="SF Pro:Semibold:15.0"  \
+                     icon.color=$WHITE                 \
+                     icon.padding_left=$PADDINGS                 \
+                     icon.padding_right=$PADDINGS \
+                     label.font="SF Pro:Semibold:15.0" \
+                     label.color=$WHITE                \
+                     label.padding_left=$PADDINGS                  \
+                     label.padding_right=$PADDINGS                 \
+                     background.color=$ITEM_BG_COLOR       \
+                     background.corner_radius=9            \
+                     background.height=30                 \
+                     padding_left=$PADDINGS \
+                     padding_right=$PADDINGS \
+                     popup.background.border_width=2 \
+                     popup.background.corner_radius=9 \
+                     popup.background.border_color=$POPUP_BORDER_COLOR \
+                     popup.background.color=$POPUP_BACKGROUND_COLOR \
+                     popup.blur_radius=20 \
+                     popup.background.shadow.drawing=on
+
+# -- Left Side Items --
+source $ITEM_DIR/apple.sh
+source $ITEM_DIR/spaces.sh
+source $ITEM_DIR/front_app.sh
+
+# Center
+source $ITEM_DIR/spotify.sh
+
+# -- Right Side Of Notch Items --
+# source $ITEM_DIR/media.sh
+
+# -- Right Side Items --
+source $ITEM_DIR/calendar.sh
+source $ITEM_DIR/brew.sh
+source $ITEM_DIR/github.sh
+source $ITEM_DIR/battery.sh
+source $ITEM_DIR/volume.sh
+source $ITEM_DIR/cpu.sh
+
+
+##### Finalizing Setup #####
+# The below command is only needed at the end of the initial configuration to
+# force all scripts to run the first time, it should never be run in an item script.
+
+sketchybar --update
+
