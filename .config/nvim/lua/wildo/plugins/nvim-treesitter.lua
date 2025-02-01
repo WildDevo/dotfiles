@@ -45,6 +45,7 @@ return {
           "erlang",
           "terraform",
           "go",
+          "elixir",
         },
         incremental_selection = {
           enable = true,
