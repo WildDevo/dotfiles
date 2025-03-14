@@ -88,12 +88,6 @@ return {
       on_attach = on_attach,
     })
 
-    -- configure tailwindcss server
-    lspconfig["tailwindcss"].setup({
-      capabilities = capabilities,
-      on_attach = on_attach,
-    })
-
     -- configure svelte server
     lspconfig["svelte"].setup({
       capabilities = capabilities,
@@ -137,6 +131,12 @@ return {
       on_attach = on_attach,
     })
 
+    -- configure elixt server
+    lspconfig["elixirls"].setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+    })
+
     -- configure lua server (with special settings)
     lspconfig["lua_ls"].setup({
       capabilities = capabilities,
@@ -159,7 +159,7 @@ return {
     })
 
     -- configure erlang server
-    lspconfig["erlang_ls"].setup({
+    lspconfig["erlangls"].setup({
       capabilities = capabilities,
       on_attach = on_attach,
       root_dir = function()
