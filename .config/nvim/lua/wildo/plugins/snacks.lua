@@ -26,4 +26,13 @@ return {
             }
         }
     },
+    keys = {
+        -- Top Pickers & Explorer
+        --{ "<leader>tf", ":lua Snacks.picker.smart()<CR>", desc = "Smart Find Files" },
+        --{ "<leader>tb", ":lua Snacks.picker.buffers()<CR>", desc = "Buffers" },
+        --{ "<leader>te", ":lua  Snacks.picker.grep()<CR>", desc = "Grep" },
+        --{ "<leader>th", ":lua  Snacks.picker.command_history()<CR>", desc = "Command History" },
+        { "<leader>fn", ":lua  Snacks.picker.notifications()<CR>", desc = "Notification History" },
+        --{ "<leader>tk", ":lua  Snacks.explorer()<CR>", desc = "File Explorer" },
+    },
 }
