@@ -1,70 +1,64 @@
 #!/bin/bash
 
-export WHITE=0xffffffff
-
-export BAR_COLOR=$TRANSPARENT
-export ITEM_BG_COLOR=0xff003547
-export ACCENT_COLOR=0xff2cf9ed
-export POPUP_BACKGROUND_COLOR=0xff24273a
-export POPUP_BORDER_COLOR=$WHITE
-export SHADOW_COLOR=$BLACK
-
-# -- Teal Scheme --
-# export BAR_COLOR=0xff001f30
-# export ITEM_BG_COLOR=0xff003547
-# export ACCENT_COLOR=0xff2cf9ed
-
-# -- Gray Scheme --
-# export BAR_COLOR=0xff101314
-# export ITEM_BG_COLOR=0xff353c3f
-# export ACCENT_COLOR=0xffffffff
-
-# -- Purple Scheme --
-# export BAR_COLOR=0xff140c42
-# export ITEM_BG_COLOR=0xff2b1c84
-# export ACCENT_COLOR=0xffeb46f9
-
-# -- Red Scheme ---
-# export BAR_COLOR=0xff23090e
-# export ITEM_BG_COLOR=0xff591221
-# export ACCENT_COLOR=0xffff2453
-
-# -- Blue Scheme --- 
-# export BAR_COLOR=0xff021254
-# export ITEM_BG_COLOR=0xff093aa8
-# export ACCENT_COLOR=0xff15bdf9
-
-# -- Green Scheme --
-# export BAR_COLOR=0xff003315
-# export ITEM_BG_COLOR=0xff008c39
-# export ACCENT_COLOR=0xff1dfca1
-
-
-# -- Orange Scheme --
-# export BAR_COLOR=0xff381c02
-# export ITEM_BG_COLOR=0xff99440a
-# export ACCENT_COLOR=0xfff97716
-
-# -- Yellow Scheme --
-# export BAR_COLOR=0xff2d2b02
-# export ITEM_BG_COLOR=0xff8e7e0a
-# export ACCENT_COLOR=0xfff7fc17
+# Catppuccin Frappe -- matches nvim (catppuccin-frappe), tmux and kitty.
 #
+# Palette first, then anything derived from it. Order matters: this file is
+# sourced top to bottom, so a derived colour defined above its palette entry
+# silently evaluates to an empty string.
 
-# Color Palette
-export BLACK=0xff181926
-export WHITE=0xffcad3f5
-export RED=0xffed8796
-export GREEN=0xffa6da95
-export BLUE=0xff8aadf4
-export YELLOW=0xffeed49f
-export ORANGE=0xfff5a97f
-export MAGENTA=0xffc6a0f6
-export GREY=0xff939ab7
+# -- Palette --
+export ROSEWATER=0xfff2d5cf
+export FLAMINGO=0xffeebebe
+export PINK=0xfff4b8e4
+export MAUVE=0xffca9ee6
+export RED=0xffe78284
+export MAROON=0xffea999c
+export PEACH=0xffef9f76
+export YELLOW=0xffe5c890
+export GREEN=0xffa6d189
+export TEAL=0xff81c8be
+export SKY=0xff99d1db
+export SAPPHIRE=0xff85c1dc
+export BLUE=0xff8caaee
+export LAVENDER=0xffbabbf1
+
+export TEXT=0xffc6d0f5
+export SUBTEXT1=0xffb5bfe2
+export SUBTEXT0=0xffa5adce
+export OVERLAY2=0xff949cbb
+export OVERLAY1=0xff838ba7
+export OVERLAY0=0xff737994
+export SURFACE2=0xff626880
+export SURFACE1=0xff51576d
+export SURFACE0=0xff414559
+export BASE=0xff303446
+export MANTLE=0xff292c3c
+export CRUST=0xff232634
+
 export TRANSPARENT=0x00000000
 
-# General bar colors
-export POPUP_BACKGROUND_COLOR=0xff24273a
-export POPUP_BORDER_COLOR=$WHITE
+# -- Aliases --
+# The item and plugin scripts were written against these names; keeping them
+# pointed at palette entries means a retheme only touches this file.
+export WHITE=$TEXT
+export BLACK=$CRUST
+export GREY=$OVERLAY0
+export MAGENTA=$MAUVE
+export ORANGE=$PEACH
+export CYAN=$SKY
 
-export SHADOW_COLOR=$BLACK
+# -- Semantic --
+# The laptop bar floats, so it needs a real background rather than the
+# desktop bar's transparent one.
+export BAR_COLOR=0xe6303446   # base at ~90%
+export ITEM_BG_COLOR=$SURFACE0
+export ACCENT_COLOR=$BLUE
+
+# Bracket fill and border. These were previously undefined, which left the
+# volume/status bracket with no background at all.
+export BACKGROUND_1=$SURFACE0
+export BACKGROUND_2=$SURFACE1
+
+export POPUP_BACKGROUND_COLOR=$MANTLE
+export POPUP_BORDER_COLOR=$SURFACE2
+export SHADOW_COLOR=$CRUST

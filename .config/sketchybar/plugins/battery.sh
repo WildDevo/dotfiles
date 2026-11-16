@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 source "$HOME/.config/sketchybar/icons.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 
-PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
-CHARGING="$(pmset -g batt | grep 'AC Power')"
+# One pmset call; first line is the power source, second has the percentage.
+BATT="$(pmset -g batt)"
+PERCENTAGE="$(grep -Eo '[0-9]+%' <<< "$BATT" | cut -d% -f1)"
+CHARGING="$(grep 'AC Power' <<< "$BATT")"
 
 if [ "$PERCENTAGE" = "" ]; then
   exit 0
@@ -25,7 +27,6 @@ esac
 
 if [[ $CHARGING != "" ]]; then
   ICON=$BATTERY_CHARGING
-  DRAWING=off
 fi
 
 # The item invoking this script (name $NAME) will get its icon and label

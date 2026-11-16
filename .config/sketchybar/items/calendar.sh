@@ -5,9 +5,11 @@ calendar=(
   icon.font="$FONT:Black:12.0"
   icon.padding_right=0
   label.align=right
-  update_freq=10
+  update_freq=1
   script="$PLUGIN_DIR/calendar.sh"
-  click_script="$PLUGIN_DIR/zen.sh"
+  # Click opens Calendar. The previous click_script pointed at plugins/zen.sh,
+  # which does not exist in this config.
+  click_script="open -a Calendar"
 )
 
 sketchybar --add item calendar right       \

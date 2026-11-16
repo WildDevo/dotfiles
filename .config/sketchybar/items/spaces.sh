@@ -1,59 +1,72 @@
 #!/bin/bash
 
-SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15")
+source "$CONFIG_DIR/workspaces.sh"
 
-# Destroy space on right click, focus space on left click.
-# New space by left clicking separator (>)
+# AeroSpace workspaces are not macOS Spaces, so these are plain items rather
+# than `--add space` items -- there is no macOS space id to associate them with.
+# Left click focuses the workspace; plugins/aerospace.sh keeps them in sync.
 
-sid=0
-spaces=()
-for i in "${!SPACE_ICONS[@]}"
-do
-  sid=$(($i+1))
+sketchybar --add event aerospace_workspace_change \
+           --add event aerospace_focus_change
 
+# Every workspace gets an item up front -- creating and destroying items on each
+# switch is far more expensive than toggling `drawing`. plugins/aerospace.sh
+# decides which are actually shown: occupied ones, plus the focused one so you
+# can always see where you are.
+for wsid in $WORKSPACES; do
   space=(
-    associated_space=$sid
-    icon=${SPACE_ICONS[i]}
-    icon.padding_left=10
-    icon.padding_right=15
+    icon="$wsid"
+    icon.padding_left=8
+    icon.padding_right=6
+    icon.color=$SUBTEXT0
+    icon.highlight_color=$ACCENT_COLOR
+    label.font="sketchybar-app-font:Regular:14.0"
+    label.color=$SUBTEXT0
+    label.padding_left=0
+    label.padding_right=8
+    label.drawing=off
     padding_left=2
     padding_right=2
-    label.padding_right=20
-    icon.highlight_color=$RED
-    label.font="sketchybar-app-font:Regular:16.0"
-    label.background.height=26
-    label.background.drawing=on
-    label.background.color=$BACKGROUND_2
-    label.background.corner_radius=8
-    label.drawing=off
-    script="$PLUGIN_DIR/space.sh"
+    # The focused workspace gets this chip; the plugin turns it on.
+    background.color=$SURFACE2
+    background.corner_radius=$CORNER_RADIUS
+    background.height=24
+    background.drawing=off
+    # Hidden until the plugin decides otherwise, so the row starts empty rather
+    # than flashing all seven on load.
+    drawing=off
+    click_script="aerospace workspace $wsid"
   )
 
-  sketchybar --add space space.$sid left    \
-             --set space.$sid "${space[@]}" \
-             --subscribe space.$sid mouse.clicked
+  sketchybar --add item space.$wsid left \
+             --set space.$wsid "${space[@]}"
 done
 
+# A single hidden item drives every space item, so a workspace change costs one
+# aerospace query instead of one per workspace. updates=on is required: the
+# global default is updates=when_shown, which never runs the script of an item
+# that isn't drawn.
+# update_freq is a safety net, not the main path: the events below do the real
+# work. It exists so the row recovers on its own if AeroSpace was down when
+# sketchybar loaded, or if an event is ever missed.
+sketchybar --add item spaces_driver left                        \
+           --set spaces_driver drawing=off                      \
+                               updates=on                       \
+                               update_freq=30                   \
+                               script="$PLUGIN_DIR/aerospace.sh" \
+           --subscribe spaces_driver aerospace_workspace_change  \
+                                     aerospace_focus_change
+
+# One filled surface behind the whole workspace row, matching the session and
+# status brackets in groups.sh.
 spaces=(
   background.color=$BACKGROUND_1
   background.border_color=$BACKGROUND_2
-  background.border_width=2
+  background.border_width=$BORDER_WIDTH
+  background.corner_radius=$BRACKET_CORNER_RADIUS
+  background.height=$BRACKET_HEIGHT
   background.drawing=on
 )
 
-separator=(
-  icon=􀆊
-  icon.font="$FONT:Heavy:16.0"
-  padding_left=15
-  padding_right=15
-  label.drawing=off
-  associated_display=active
-  click_script='yabai -m space --create && sketchybar --trigger space_change'
-  icon.color=$WHITE
-)
-
 sketchybar --add bracket spaces '/space\..*/' \
-           --set spaces "${spaces[@]}"        \
-                                              \
-           --add item separator left          \
-           --set separator "${separator[@]}"
+           --set spaces "${spaces[@]}"

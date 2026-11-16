@@ -13,6 +13,10 @@ spotify_anchor=(
   icon.font="$FONT:Regular:25.0"
   label.drawing=off
   drawing=off
+  # updates=on is required: this item starts hidden, and the laptop bar's
+  # global default of updates=when_shown never runs the script of an item that
+  # isn't drawn -- so it could never draw itself on the first refresh.
+  updates=on
   y_offset=2
 )
 
@@ -149,7 +153,8 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT             \
            --add item spotify.anchor center                      \
            --set spotify.anchor "${spotify_anchor[@]}"           \
            --subscribe spotify.anchor mouse.entered mouse.exited \
-                                      mouse.exited.global        \
+                                      mouse.exited.global       \
+                                      spotify_change            \
                                                                  \
            --add item spotify.cover popup.spotify.anchor         \
            --set spotify.cover "${spotify_cover[@]}"             \
@@ -177,7 +182,7 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT             \
                                                                  \
            --add item spotify.play popup.spotify.anchor          \
            --set spotify.play "${spotify_play[@]}"               \
-           --subscribe spotify.play mouse.clicked spotify_change \
+           --subscribe spotify.play mouse.clicked                \
                                                                  \
            --add item spotify.next popup.spotify.anchor          \
            --set spotify.next "${spotify_next[@]}"               \
@@ -195,4 +200,4 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT             \
                                           spotify.play           \
                                           spotify.next           \
                                           spotify.repeat         \
-           --set spotify.controls "${spotify_controls[@]}"       \
+           --set spotify.controls "${spotify_controls[@]}"
