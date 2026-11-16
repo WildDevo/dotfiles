@@ -1,0 +1,164 @@
+# AeroSpace — tiling window manager
+# Reference: https://nikitabobko.github.io/AeroSpace/guide
+#
+# Keybindings are ported from the old skhd + yabai setup so the muscle memory
+# carries over: alt focuses, alt+shift moves, ctrl+alt joins.
+
+config-version = 2
+
+start-at-login = true
+auto-reload-config = true
+
+# See: https://nikitabobko.github.io/AeroSpace/guide#normalization
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# 'tiles' is the closest equivalent of yabai's bsp layout
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+accordion-padding = 30
+
+# yabai: mouse_follows_focus on
+# The sketchybar trigger keeps the layout indicator and the per-workspace app
+# icons in step with the focused window.
+on-focus-changed = [
+    'move-mouse window-lazy-center',
+    'exec-and-forget sketchybar --trigger aerospace_focus_change',
+]
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+focus-follows-mouse.enabled = false
+
+key-mapping.preset = 'qwerty'
+
+# These workspaces exist even when empty, so alt-<n> can switch to one that has
+# nothing in it yet. The sketchybar indicator deliberately hides empty ones, so
+# this list is the set you can reach, not the set you see.
+# Keep in sync with WORKSPACES in ../sketchybar/workspaces.sh
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7']
+
+# Tell sketchybar which workspace is focused. AEROSPACE_FOCUSED_WORKSPACE is
+# exported by AeroSpace; sketchybar's space.sh reads it off the event.
+exec-on-workspace-change = [
+    '/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
+]
+
+# yabai: window_gap 6, {left,right,bottom}_padding 6
+# The top gap clears sketchybar, which is configured per-display. Both bars sit
+# flush against the top edge, so the gap is just bar height plus 6px of
+# breathing room: built-in 39 + 6, external 35 + 6.
+gaps.inner.horizontal = 6
+gaps.inner.vertical   = 6
+gaps.outer.left       = 6
+gaps.outer.bottom     = 6
+gaps.outer.right      = 6
+gaps.outer.top        = [{ monitor.'built-in' = 45 }, 41]
+
+# yabai: rule --add app="..." manage=off
+on-window-detected = [
+    { if = 'test %{app-bundle-id} = com.apple.systempreferences', run = 'layout floating' },
+    { if = 'test %{app-bundle-id} = com.apple.calculator', run = 'layout floating' },
+    { if = 'test %{app-bundle-id} = com.apple.QuickTimePlayerX', run = 'layout floating' },
+    { if = 'test %{app-name} ~= Karabiner', run = 'layout floating' },
+]
+
+[mode.main.binding]
+
+    # -- Changing Window Focus --
+
+    alt-h = 'focus left'
+    alt-j = 'focus down'
+    alt-k = 'focus up'
+    alt-l = 'focus right'
+
+    # Focus display left / right
+    alt-s = 'focus-monitor left'
+    alt-g = 'focus-monitor right'
+
+    # -- Switching Workspaces --
+    # New vs. the skhd setup: yabai rode on macOS Spaces, so ctrl-<n> switched
+    # them. AeroSpace workspaces are its own, so they need real bindings.
+
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-5 = 'workspace 5'
+    alt-6 = 'workspace 6'
+    alt-7 = 'workspace 7'
+    alt-tab = 'workspace-back-and-forth'
+
+    # -- Modifying the Layout --
+
+    # These change the layout without changing focus, so on-focus-changed never
+    # fires and sketchybar's layout indicator would sit stale until something
+    # else refreshed it. Each one re-triggers the event by hand.
+
+    # yabai: space --rotate 270. Flips the container's orientation.
+    alt-shift-r = ['layout horizontal vertical', 'exec-and-forget sketchybar --trigger aerospace_focus_change']
+    alt-slash = ['layout tiles horizontal vertical', 'exec-and-forget sketchybar --trigger aerospace_focus_change']
+    alt-comma = ['layout accordion horizontal vertical', 'exec-and-forget sketchybar --trigger aerospace_focus_change']
+
+    # yabai: window --toggle float
+    alt-shift-t = ['layout floating tiling', 'exec-and-forget sketchybar --trigger aerospace_focus_change']
+
+    # -- Modifying Window Size --
+
+    # yabai: window --toggle zoom-fullscreen
+    alt-shift-m = ['fullscreen', 'exec-and-forget sketchybar --trigger aerospace_focus_change']
+
+    # yabai: space --balance
+    alt-shift-e = 'balance-sizes'
+
+    alt-minus = 'resize smart -50'
+    alt-equal = 'resize smart +50'
+
+    # -- Moving Windows Around --
+
+    # Swap with the neighbour in that direction
+    alt-shift-h = 'move left'
+    alt-shift-j = 'move down'
+    alt-shift-k = 'move up'
+    alt-shift-l = 'move right'
+
+    # yabai: window --warp. Re-parents the window next to its neighbour.
+    ctrl-alt-h = 'join-with left'
+    ctrl-alt-j = 'join-with down'
+    ctrl-alt-k = 'join-with up'
+    ctrl-alt-l = 'join-with right'
+
+    # Move window to display left / right and follow it
+    alt-shift-s = 'move-node-to-monitor --focus-follows-window left'
+    alt-shift-g = 'move-node-to-monitor --focus-follows-window right'
+
+    # Move window to prev / next workspace
+    alt-shift-p = 'move-node-to-workspace --wrap-around prev'
+    alt-shift-n = 'move-node-to-workspace --wrap-around next'
+
+    # Move window to workspace #
+    alt-shift-1 = 'move-node-to-workspace 1'
+    alt-shift-2 = 'move-node-to-workspace 2'
+    alt-shift-3 = 'move-node-to-workspace 3'
+    alt-shift-4 = 'move-node-to-workspace 4'
+    alt-shift-5 = 'move-node-to-workspace 5'
+    alt-shift-6 = 'move-node-to-workspace 6'
+    alt-shift-7 = 'move-node-to-workspace 7'
+
+    # -- Controlling AeroSpace --
+
+    # Replaces the old `brew services restart yabai`
+    ctrl-alt-r = 'reload-config'
+    # Suspend tiling without quitting, for when a window needs to be left alone
+    ctrl-alt-q = 'enable toggle'
+
+    alt-shift-semicolon = 'mode service'
+
+# See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+# Same as above: these mutate layout or window count without moving focus, so
+# they have to nudge sketchybar themselves.
+[mode.service.binding]
+    esc = ['reload-config', 'mode main']
+    r = ['flatten-workspace-tree', 'exec-and-forget sketchybar --trigger aerospace_focus_change', 'mode main'] # reset layout
+    f = ['layout floating tiling', 'exec-and-forget sketchybar --trigger aerospace_focus_change', 'mode main']
+    backspace = ['close-all-windows-but-current', 'exec-and-forget sketchybar --trigger aerospace_focus_change', 'mode main']
