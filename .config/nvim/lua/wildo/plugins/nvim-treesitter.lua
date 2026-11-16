@@ -1,6 +1,9 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    -- `main` is a rewrite without nvim-treesitter.configs; this config (and
+    -- nvim-treesitter-textobjects) is written against the frozen `master` API.
+    branch = "master",
     event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
     dependencies = {

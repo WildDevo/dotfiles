@@ -25,10 +25,14 @@ return {
     })
 
     mason_lspconfig.setup({
-      -- list of servers for mason to install
+      -- The single list of language servers. Each is installed if missing and,
+      -- via automatic_enable (on by default), enabled with vim.lsp.enable().
+      -- Per-server settings go in lspconfig.lua as vim.lsp.config() calls.
+      -- Anything else installed through :Mason is enabled too.
       ensure_installed = {
-        "tsserver",
+        "ts_ls",
         "html",
+        "cssls",
         "svelte",
         "lua_ls",
         "graphql",
@@ -36,9 +40,9 @@ return {
         "prismals",
         "pyright",
         "elixirls",
+        "erlangls",
+        "gopls",
       },
-      -- auto-install configured servers (with lspconfig)
-      automatic_installation = true, -- not the same as ensure_installed
     })
 
     mason_tool_installer.setup({

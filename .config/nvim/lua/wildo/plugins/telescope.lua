@@ -1,6 +1,6 @@
 return {
   "nvim-telescope/telescope.nvim",
-  branch = "0.1.x",
+  version = "*", -- latest tagged release; the 0.1.x branch is unmaintained
   dependencies = {
     "nvim-lua/plenary.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -23,7 +23,7 @@ return {
           "--smart-case",
         },
         prompt_prefix = "  ",
-        slection_caret = " ",
+        selection_caret = " ",
         entry_prefix = " ",
         initial_mode = "insert",
         selection_strategy = "reset",
@@ -44,7 +44,8 @@ return {
         },
         file_sorter = require("telescope.sorters").get_fuzzy_file,
         generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
-        path_display = { "truncate " },
+        file_ignore_patterns = { "%.git/"},
+        path_display = { "truncate" },
         winblend = 0,
         border = {},
         color_devicons = true,
@@ -62,11 +63,21 @@ return {
 
     -- set keymaps
     local keymap = vim.keymap -- for conciseness
+    local builtin = require("telescope.builtin")
 
-    keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
-    vim.api.nvim_set_keymap('n', '<leader>fi', ':lua require"telescope.builtin".find_files({ hidden = true })<CR>', {noremap = true, silent = true, desc = "Fuzzy find files in cwd (ignores .git)"})
-    keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
-    keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
-    keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
+    keymap.set("n", "<leader>ff", function()
+      builtin.find_files({ hidden = true })
+    end, { desc = "Find files (incl. hidden)" })
+    keymap.set("n", "<leader>fa", function()
+      builtin.find_files({ hidden = true, no_ignore = true })
+    end, { desc = "Find files (incl. hidden + gitignored)" })
+    keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent files" })
+    keymap.set("n", "<leader>fs", function()
+      builtin.live_grep({ additional_args = { "--hidden" } })
+    end, { desc = "Live grep (incl. hidden)" })
+    keymap.set("n", "<leader>fS", function()
+      builtin.live_grep({ additional_args = { "--hidden", "--no-ignore" } })
+    end, { desc = "Live grep (incl. hidden + gitignored)" })
+    keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Grep word under cursor" })
   end,
 }

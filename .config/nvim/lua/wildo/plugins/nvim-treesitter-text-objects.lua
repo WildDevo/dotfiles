@@ -1,5 +1,6 @@
 return {
   "nvim-treesitter/nvim-treesitter-textobjects",
+  branch = "master", -- must match nvim-treesitter's branch; see nvim-treesitter.lua
   lazy = true,
   config = function()
     require("nvim-treesitter.configs").setup({

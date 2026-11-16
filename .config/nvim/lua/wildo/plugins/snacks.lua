@@ -3,17 +3,51 @@ return {
     priority = 1000,
     lazy = false,
     opts = {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
         bigfile = { enabled = true },
-        dashboard = { enabled = true },
+        dashboard = {
+            enabled = true,
+            preset = {
+                header = table.concat({
+                    "                                                       ",
+                    "  ██╗    ██╗██╗██╗     ██████╗  ██████╗  ",
+                    "  ██║    ██║██║██║     ██╔══██╗██╔═══██╗ ",
+                    "  ██║ █╗ ██║██║██║     ██║  ██║██║   ██║ ",
+                    "  ██║███╗██║██║██║     ██║  ██║██║   ██║ ",
+                    "  ╚███╔███╔╝██║███████╗██████╔╝╚██████╔╝ ",
+                    "   ╚══╝╚══╝ ╚═╝╚══════╝╚═════╝  ╚═════╝  ",
+                    "                                                       ",
+                }, "\n"),
+                keys = {
+                    { icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
+                    { icon = " ", key = "E", desc = "File Explorer", action = ":lua Snacks.explorer()" },
+                    { icon = "󰱼 ", key = "f", desc = "Find File", action = ":Telescope find_files" },
+                    { icon = " ", key = "g", desc = "Find Word", action = ":Telescope live_grep" },
+                    { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
+                    { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+                },
+            },
+            sections = {
+                { section = "header" },
+                { section = "keys", gap = 1, padding = 1 },
+                { section = "startup" },
+            },
+        },
         explorer = { enabled = true },
         indent = { enabled = true },
         input = { enabled = true },
-        picker = { enabled = true },
-        notifier = { enabled = true,
-                     timeout = 3000,
+        picker = {
+            sources = {
+                explorer = {
+                    layout = { preset = "sidebar", preview = false },
+                    hidden = true,
+                    ignored = false,
+                    exclude = { ".DS_Store" },
+                },
+            },
+        },
+        notifier = {
+            enabled = true,
+            timeout = 3000,
         },
         quickfile = { enabled = true },
         scope = { enabled = true },
@@ -22,17 +56,13 @@ return {
         words = { enabled = true },
         styles = {
             notification = {
-            -- wo = { wrap = true } -- Wrap notifications
-            }
-        }
+                -- wo = { wrap = true } -- Wrap notifications
+            },
+        },
     },
     keys = {
-        -- Top Pickers & Explorer
-        --{ "<leader>tf", ":lua Snacks.picker.smart()<CR>", desc = "Smart Find Files" },
-        --{ "<leader>tb", ":lua Snacks.picker.buffers()<CR>", desc = "Buffers" },
-        --{ "<leader>te", ":lua  Snacks.picker.grep()<CR>", desc = "Grep" },
-        --{ "<leader>th", ":lua  Snacks.picker.command_history()<CR>", desc = "Command History" },
-        { "<leader>fn", ":lua  Snacks.picker.notifications()<CR>", desc = "Notification History" },
-        --{ "<leader>tk", ":lua  Snacks.explorer()<CR>", desc = "File Explorer" },
+        { "<leader>fn", function() Snacks.picker.notifications() end, desc = "Notification History" },
+        { "<leader>ee", function() Snacks.explorer() end, desc = "Toggle file explorer" },
+        { "<leader>ef", function() Snacks.explorer.reveal() end, desc = "Reveal current file in explorer" },
     },
 }
